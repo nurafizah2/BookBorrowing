@@ -1,0 +1,150 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 23 May 2025, 12:11:35 PM
+    Author     : User
+*/
+/* General styles */
+/* General styles */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #f6f9fc, #dbe9f4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    min-height: 100vh;
+    margin: 0;
+}
+
+/* Auth container */
+.auth-card {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Headings */
+.auth-card h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #333;
+    font-size: 26px;
+}
+
+/* Inputs */
+.auth-card input[type="text"],
+.auth-card input[type="email"],
+.auth-card input[type="password"] {
+    width: 100%;
+    padding: 12px 14px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 15px;
+    transition: 0.2s;
+}
+
+.auth-card input:focus {
+    border-color: #5c9ded;
+    outline: none;
+    background-color: #f9fbff;
+}
+
+/* Submit button */
+.auth-card input[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background-color 0.3s ease;
+}
+
+.auth-card input[type="submit"]:hover {
+    background-color: #3367d6;
+}
+
+/* Bottom link */
+.auth-switch {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.auth-switch a {
+    color: #4285f4;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-switch a:hover {
+    text-decoration: underline;
+}
+
+.auth-card select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+ .password-container {
+    position: relative;
+    width: 100%;
+}
+
+.password-container input[type="password"],
+.password-container input[type="text"] {
+    width: 100%;
+    padding: 12px 14px;
+    padding-right: 40px; /* Space for eye icon */
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 15px;
+    transition: 0.2s;
+}
+
+.password-container .toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.password-container .toggle-password svg {
+    width: 20px;
+    height: 20px;
+    fill: #888; /* or #333 for darker */
+}
+
+.lms-title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+
+
+
+

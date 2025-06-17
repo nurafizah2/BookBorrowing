@@ -1,0 +1,85 @@
+/* 
+    Author     : Fiza
+*/
+
+
+.navbar {
+    display: flex;
+    justify-content: space-between;  /* Burger left, profile right */
+    align-items: center;
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    
+}
+
+.burger-menu {
+    width: 30px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 20px;
+    color: aqua;
+}
+
+.burger-menu span {
+    height: 4px;
+    background: black;
+    border-radius: 2px;
+    display: block;
+}
+
+.nav-links {                     /* menu dalam burger*/
+    display: none;  
+    z-index: 9999; 
+    flex-direction: column;
+    padding: 10px;
+    margin: 10px;
+    width: 130px;
+    background-color: #333;
+    color: white;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.nav-links a {                /*perkataan dalam menu burger*/
+    text-decoration: none;
+    margin: 5px 0;
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 5px 0;
+}
+
+.nav-links a:hover {
+    background-color: #555;
+}
+
+.nav-links.show {
+    display: flex;
+}
+
+.profile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; /* Makes it circular */
+    object-fit: cover;
+}
+
+
+
+
+footer{
+     background-color:#333; 
+     text-align:center; 
+     padding:15px; 
+     margin-top:20px; 
+     border-top:1px solid #ccc;
+     color: white;
+}
+    
+
+
+
+

@@ -1,0 +1,264 @@
+/* 
+    Created on : 23 May 2025, 12:22:52 PM
+    Author     : User
+*/
+
+/* ===== General Layout ===== */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  flex-direction: column;
+}
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f1f4f9;
+    
+  
+}
+
+.dashboard {
+    display: flex;
+ overflow: hidden;
+ height: calc(100vh - 80px);
+    flex: 1;
+}
+
+.content {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+.content h2 {
+    color: black;
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+    width: 250px;
+    background-color: #0d2f3b;
+    color: whitesmoke;
+     padding: 0; /* remove */
+    overflow: visible;
+    position: relative;
+}
+
+
+
+.sidebar h2 {
+    margin: 0;
+    font-size: 22px;
+    text-align: center;
+    padding: 20px 10px 10px;
+}
+
+.sidebar .welcome {
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.sidebar ul {
+    list-style: none;
+     padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    margin: 15px 0;
+    width: 100%;
+}
+
+.sidebar ul li a,
+.dropdown-btn {
+    display: block;
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 15px;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 500;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+}
+
+.sidebar ul li a:hover,
+.dropdown-btn:hover {
+  background-color: #1f4b5c;
+    color: #f0f0f0;
+}
+
+/* ===== Submenu / Dropdown ===== */
+.has-submenu {
+    position: relative;
+    padding-left: 0;
+    margin-left: 0;
+     width: 100%;
+}
+
+.has-submenu a {         /*manage book*/
+    font-size: 16px;
+    margin-left: 0px;
+}
+
+.dropdown-btn {
+    display: flex;
+    align-items: center;
+   justify-content: space-between;
+    padding: 4px 6px 0px 0px;
+    width: 100%;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    outline: none;
+    text-decoration: none;
+    margin: 0px;
+}
+
+
+
+.arrow {
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 4px;
+  transform: rotate(45deg);
+  transition: transform 0.3s ease;
+  margin-left: 8px;
+}
+
+.arrow.open {
+  transform: rotate(-135deg); /* Up arrow */
+}
+
+
+
+.submenu {
+  display: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background-color: #1a3e4d;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  max-height: 0;
+}
+
+
+
+.submenu.show {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+  max-height: 200px;
+  width:190px;
+}
+
+
+.submenu li a {
+  color: #dcdcdc;
+  text-decoration: none;
+  font-size: 14px;
+  display: block;
+  padding: 10px 20px; /* Aligns with typical sidebar spacing */
+  width: 100%;
+}
+
+.submenu li a:hover {
+  color: white;
+  background-color: #225364;
+  border-radius: 0; /* Optional: Remove if you want full-width hover */
+}
+
+
+/* ===== Buttons ===== */
+button {
+    padding: 10px 15px;
+    margin-bottom: 2px;
+    border: none;
+    
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+
+
+/* ===== Table Styling ===== */
+
+/* ===== Header Title ===== */
+.lms-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 2rem;
+  margin: 0;
+  padding: 0px 0px;
+  background-color: #164659;
+  color: whitesmoke;
+  line-height: 1;
+}
+.title-text {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2rem;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.spacer {
+  width: 40px; /* Equal to logo width to balance layout */
+}
+.logo {
+  height: 100px;
+  width: auto;
+  display: inline-block;
+  object-fit: contain;
+}
+
+
+
+/* ===== Layout Top Row ===== */
+.top-layout {
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+/* Add this at the bottom of admin-menu-style.css */
+
+footer {
+  background-color: #164659;
+  text-align: center;
+  padding: 15px;
+  color: white;
+  border-top: 1px solid #ccc;
+  flex-shrink: 0;
+  size:50px;
+  
+}
+
+.wrapper {
+    flex: 1; /* Take all space between header and footer */
+    flex-direction: column;
+     height: 100vh;/* optionally flex-direction: row if you want sidebar + content side by side */
+}
+
+.main-content {
+    flex: 1;
+    overflow-y: auto; /* Scrollable main content */
+    padding: 20px;
+}
