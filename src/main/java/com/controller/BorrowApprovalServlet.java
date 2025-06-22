@@ -44,13 +44,12 @@ public class BorrowApprovalServlet extends HttpServlet {
                 LocalDate returnDate = LocalDate.now().plusDays(7);
                 borrowDAO.updateStatus(requestId, "APPROVED", returnDate);
                 bookDAO.updateBookAvailability(bookId, "unavailable");
-                borrowDAO.sendNotification(userId, "Your borrow request has been approved.");
-          
-
+                borrowDAO.sendNotification(userId, bookId, "Your borrow request has been approved.");
 
             } else if ("REJECTED".equals(action)) {
                 borrowDAO.updateStatus(requestId, "REJECTED", null);
-                borrowDAO.sendNotification(userId, "Your borrow request has been rejected.");
+                bookDAO.updateBookAvailability(bookId, "available");
+                borrowDAO.sendNotification(userId, bookId, "Your borrow request has been rejected.");
                 borrowDAO.deleteRequest(requestId);
             }
             System.out.println("Action/status received: " + action);

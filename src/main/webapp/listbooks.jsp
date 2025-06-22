@@ -17,9 +17,7 @@
             flex-direction: column;
             overflow-y: auto;
         }
-        
-        
-      
+
         .search-bar-container {
             display: flex;
             justify-content: center;
@@ -145,6 +143,7 @@
             font-size: 15px;
             margin-bottom: 2px;
         }
+        
         @media (max-width: 768px) {
             header h1 {
                 font-size: 28px;
@@ -184,27 +183,21 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);  
         }
         
-
     </style>
 </head>
 
 <body>
-
-    <%-- SUCCESS POPUP MESSAGE --%>
     <%
         String successMessage = (String) session.getAttribute("successMessage");
         if (successMessage != null) {
     %>
-    
     <div id="customAlert" class="customAlert">
         <%= successMessage %>
     </div>
-
     <%
             session.removeAttribute("successMessage");
         }
     %>
-    <%-- END SUCCESS POPUP --%>
 
     <div class="lms-title">
         <div class="spacer"></div>
@@ -212,131 +205,131 @@
         <img src="images/logo4.png" alt="whisperwood_logo" class="logo">
     </div>
     
-<div class="wrapper">
-    <div class="dashboard">
-        <aside class="sidebar">
-            <h2>Admin Panel</h2>
-            <c:if test="${not empty currentUser}">
-                <p class="welcome">Hi, ${currentUser.username}!</p>
-            </c:if>
+    <div class="wrapper">
+        <div class="dashboard">
+            <aside class="sidebar">
+                <h2>Admin Panel</h2>
+                <c:if test="${not empty currentUser}">
+                    <p class="welcome">Hi, ${currentUser.username}!</p>
+                </c:if>
 
-            <nav>
-                <ul>
-                    <li><a href="AdminHome">Home</a></li>               
-                    <li class="has-submenu">
-                        <button class="dropdown-btn">Manage Books <i class="arrow down"></i></button>
-                        <ul class="submenu">
-                        <li><a href="add_book.jsp">Add Book</a></li>
-                        <li><a href="ListBooksServlet">Update Book</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="ListOfUserServlet">Manage Users</a></li>
-                     <li><a href="ReturnBookServlet"> Returned Book History</a></li>
-                    <li><a href="#" onclick="confirmLogout(event)">Logout</a></li>
-                </ul>
-            </nav>
-        </aside>
- 
-        <div class="form-container">
-            <h3>List Book</h3>
+                <nav>
+                    <ul>
+                        <li><a href="AdminHome">Home</a></li>               
+                        <li class="has-submenu">
+                            <button class="dropdown-btn">Manage Books <i class="arrow down"></i></button>
+                            <ul class="submenu">
+                                <li><a href="add_book.jsp">Add Book</a></li>
+                                <li><a href="ListBooksServlet">Update Book</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="ListOfUserServlet">Manage Users</a></li>
+                        <li><a href="ReturnBookServlet"> Returned Book History</a></li>
+                        <li><a href="#" onclick="confirmLogout(event)">Logout</a></li>
+                    </ul>
+                </nav>
+            </aside>
 
-            <div class="search-bar-container">
-                <select id="searchField">
-                    <option value="all">All</option>
-                    <option value="title">Title</option>
-                    <option value="author">Author</option>
-                    <option value="publisher">Publisher</option>
-                </select>
-                <input type="text" id="searchInput" placeholder="Search books...">
-                <button onclick="searchBooks()">Go</button>
-            </div>
-            
-            <%
-                List<Book> bookList = (List<Book>) request.getAttribute("bookList");
-                if (bookList == null || bookList.isEmpty()) {
-            %>
-                <p>No books found.</p>
-            <%
-                } else {
-            %>
-        
-    <script>
-        setTimeout(function() {
-            document.getElementById('customAlert').style.display = 'none';
-        }, 3000);
-    </script>
-        
-        <table id="bookTable" border="1">
-            <colgroup>
-                <col style="width: 5%;">   <!-- Id -->
-                <col style="width: 10%;">  <!-- Book Cover Image -->
-                <col style="width: 5%;">  <!-- Title -->
-                <col style="width: 5%;">  <!-- Author -->
-                <col style="width: 10%;">  <!-- Publisher -->
-                <col style="width: 10%;">  <!-- ISBN -->
-                <col style="width: 10%;">  <!-- Genre -->
-                <col style="width: 8%;">   <!-- Year Of Publication -->
-                <col style="width: 30%;">  <!-- Book Description -->
-                <col style="width: 5%;">   <!-- Quantity -->
-                <col style="width: 5%;">   <!-- Status -->
-                <col style="width: 7%;">   <!-- Action -->
-            </colgroup>
-            <tr>
-                <th>Id</th>
-                <th>Book Cover Image</th>
-                <th>Title</th>
-                <th>Author</th>
-                <th>Publisher</th>
-                <th>ISBN</th>
-                <th>Genre</th>
-                <th>Year Of Publication</th>
-                <th>Book Description</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-            
-            <c:forEach var="book" items="${bookList}">
+            <div class="form-container">
+                <h3>List Book</h3>
+
+                <div class="search-bar-container">
+                    <select id="searchField">
+                        <option value="all">All</option>
+                        <option value="title">Title</option>
+                        <option value="author">Author</option>
+                        <option value="publisher">Publisher</option>
+                    </select>
+                    <input type="text" id="searchInput" placeholder="Search books...">
+                    <button onclick="searchBooks()">Go</button>
+                </div>
+
+                <%
+                    List<Book> bookList = (List<Book>) request.getAttribute("bookList");
+                    if (bookList == null || bookList.isEmpty()) {
+                %>
+                    <p>No books found.</p>
+                <%
+                    } else {
+                %>
+
+        <script>
+            setTimeout(function() {
+                document.getElementById('customAlert').style.display = 'none';
+            }, 3000);
+        </script>
+
+            <table id="bookTable" border="1">
+                <colgroup>
+                    <col style="width: 5%;">   <!-- Id -->
+                    <col style="width: 10%;">  <!-- Book Cover Image -->
+                    <col style="width: 5%;">  <!-- Title -->
+                    <col style="width: 5%;">  <!-- Author -->
+                    <col style="width: 10%;">  <!-- Publisher -->
+                    <col style="width: 10%;">  <!-- ISBN -->
+                    <col style="width: 10%;">  <!-- Genre -->
+                    <col style="width: 8%;">   <!-- Year Of Publication -->
+                    <col style="width: 30%;">  <!-- Book Description -->
+                    <col style="width: 5%;">   <!-- Quantity -->
+                    <col style="width: 5%;">   <!-- Status -->
+                    <col style="width: 7%;">   <!-- Action -->
+                </colgroup>
                 <tr>
-                    <td>${book.bookId}</td>
-                    <td><img src="${book.bookCoverImage}" alt="Book Cover" /></td>
-                    <td>${book.title}</td>
-                    <td>${book.author}</td>
-                    <td>${book.publisher}</td>
-                    <td>${book.isbn}</td>
-                    <td>${book.genre}</td>
-                    <td>${book.yearOfPublication}</td>
-                    <td>${book.bookDescription}</td>
-                    <td>
-                        <c:choose>
-                            <c:when test="${book.availability == 'AVAILABLE'}">
-                                <span style="color:green;">Available</span>
-                            </c:when>
-                            <c:otherwise>
-                                <span style="color:red;">Unavailable</span>
-                            </c:otherwise>
-                        </c:choose>
-                    </td>
-                    <td>
-                        <form action="UpdateBookAvailabilityServlet" method="post">
-                            <input type="hidden" name="bookId" value="${book.bookId}" />
-                            <input type="submit" class="update-delete-btn" value="${book.availability == 'AVAILABLE' ? 'Mark as unavailable' : 'Mark as available'}" />
-                        </form>
-                        <br>
-                        <form action="DeleteBookServlet" method="post" onsubmit="return confirm('Are you sure you want to delete this book?');">
-                            <input type="hidden" name="bookId" value="${book.bookId}" />
-                            <input type="submit" class="update-delete-btn" value="Delete" />
-                        </form>
-                    </td>
+                    <th>Id</th>
+                    <th>Book Cover Image</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Publisher</th>
+                    <th>ISBN</th>
+                    <th>Genre</th>
+                    <th>Year Of Publication</th>
+                    <th>Book Description</th>
+                    <th>Status</th>
+                    <th>Action</th>
                 </tr>
-            </c:forEach>
-        </table>
-    <%
-        }
-    %>
-         </div>
+
+                <c:forEach var="book" items="${bookList}">
+                    <tr>
+                        <td>${book.bookId}</td>
+                        <td><img src="${book.bookCoverImage}" alt="Book Cover" /></td>
+                        <td>${book.title}</td>
+                        <td>${book.author}</td>
+                        <td>${book.publisher}</td>
+                        <td>${book.isbn}</td>
+                        <td>${book.genre}</td>
+                        <td>${book.yearOfPublication}</td>
+                        <td>${book.bookDescription}</td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${book.availability == 'AVAILABLE'}">
+                                    <span style="color:green;">Available</span>
+                                </c:when>
+                                <c:otherwise>
+                                    <span style="color:red;">Unavailable</span>
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
+                        <td>
+                            <form action="UpdateBookAvailabilityServlet" method="post">
+                                <input type="hidden" name="bookId" value="${book.bookId}" />
+                                <input type="submit" class="update-delete-btn" value="${book.availability == 'AVAILABLE' ? 'Mark as unavailable' : 'Mark as available'}" />
+                            </form>
+                            <br>
+                            <form action="DeleteBookServlet" method="post" onsubmit="return confirm('Are you sure you want to delete this book?');">
+                                <input type="hidden" name="bookId" value="${book.bookId}" />
+                                <input type="submit" class="update-delete-btn" value="Delete" />
+                            </form>
+                        </td>
+                    </tr>
+                </c:forEach>
+            </table>
+        <%
+            }
+        %>
+            </div>
+        </div>
     </div>
-</div>
-<%@ include file="footer.jsp" %>
+    <%@ include file="footer.jsp" %>
     <script>
         function confirmLogout(event) {
             event.preventDefault(); 
@@ -357,7 +350,6 @@
                 });
             });
         });
-
 
         function searchBooks() {
             var input = document.getElementById('searchInput').value.toLowerCase().trim();
@@ -391,7 +383,7 @@
                 rows[i].style.display = found ? '' : 'none';
             }
         }
-
+        
     </script>
-    </body>
+</body>
 </html>

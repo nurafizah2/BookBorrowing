@@ -24,12 +24,12 @@ public class BorrowDAO {
     private final String jdbcPassword = "admin";
 
     private static final String INSERT_BORROW_REQUEST = "INSERT INTO borrowing_approval (book_id, borrow_date, status, return_date, user_id) VALUES (?, ?, ?, ?, ?)";
-    private static final String INSERT_NOTIFICATION = "INSERT INTO notifications (user_id, message) VALUES (?, ?)";
+    private static final String INSERT_NOTIFICATION = "INSERT INTO notifications (user_id, book_id, message) VALUES (?, ?, ?)";
     private static final String SELECT_ALL_PENDING_REQUESTS = "SELECT ba.book_approval_id, ba.book_id, b.title AS book_title, ba.borrow_date, ba.return_date, ba.status, u.full_name, u.email, u.user_id " +
-                                                             "FROM borrowing_approval ba " +
-                                                             "JOIN users u ON ba.user_id = u.user_id " +
-                                                             "JOIN book b ON ba.book_id = b.book_id " +
-                                                             "ORDER BY ba.status DESC, ba.borrow_date ASC";
+                                                              "FROM borrowing_approval ba " +
+                                                              "JOIN users u ON ba.user_id = u.user_id " +
+                                                              "JOIN book b ON ba.book_id = b.book_id " +
+                                                              "ORDER BY ba.status DESC, ba.borrow_date ASC";
     
     private static final String SELECT_RECENT_BORROW_REQUEST = "SELECT br.book_approval_id, br.book_id, b.title, u.full_name, u.username, u.email, " +
                                                                "br.borrow_date, br.return_date, br.status, br.user_id " +
@@ -38,7 +38,7 @@ public class BorrowDAO {
                                                                "JOIN book b ON br.book_id = b.book_id " +
                                                                "ORDER BY br.borrow_date DESC LIMIT 5";
     
-    private static final String SELECT_APPROVED_REQUEST_WITH_DETAILS = "SELECT ba.book_approval_id, ba.status, ba.return_date,"+
+    private static final String SELECT_APPROVED_REQUEST_WITH_DETAILS = "SELECT ba.book_approval_id, ba.status, ba.return_date, ba.book_id, "+
                                                                        "b.title AS book_title, u.full_name, u.email, ba.actual_return_date "+
                                                                        "FROM borrowing_approval ba "+
                                                                        "JOIN book b ON ba.book_id = b.book_id "+
@@ -51,12 +51,20 @@ public class BorrowDAO {
     private static final String SELECT_APPROVED_REQUEST = "SELECT COUNT(*) FROM borrowing_approval WHERE status = 'APPROVED' ";
     private static final String SELECT_NOTIFICATION_BY_USER_ID = "SELECT id, book_id, message, created_at, is_read FROM notifications WHERE user_id = ? ORDER BY created_at DESC";
     private static final String SELECT_UNREAD_NOTIFICATION = "SELECT COUNT(*) FROM notifications WHERE user_id = ? AND is_read = false";
+    private static final String SELECT_RETURN_BOOK = "SELECT ba.*, b.book_id AS book_id, b.title AS book_title, u.full_name AS full_name " +
+                                                     "FROM borrowing_approval ba " +
+                                                     "JOIN book b ON ba.book_id = b.book_id " +
+                                                     "JOIN users u ON ba.user_id = u.user_id " +
+                                                     "WHERE ba.status = 'APPROVED' AND ba.actual_return_date IS NOT NULL "+
+                                                     "ORDER BY ba.actual_return_date DESC";
+
     private static final String UPDATE_STATUS_APPROVED = "UPDATE borrowing_approval SET status = ?, return_date = ? WHERE book_approval_id = ?";
     private static final String UPDATE_STATUS_REJECTED = "UPDATE borrowing_approval SET status = ? WHERE book_approval_id = ?";
     private static final String UPDATE_RETURN_BOOK = "UPDATE borrowing_approval SET actual_return_date = CURRENT_DATE WHERE book_approval_id = ?";
-    private static final String UPDATE_QUANTITY = "UPDATE book SET quantity = quantity + 1 WHERE book_id = (SELECT book_id FROM borrowing_approval WHERE book_approval_id = ?)";
+    private static final String UPDATE_AVAILABILITY = "UPDATE book SET availability = 'available' WHERE book_id = (SELECT book_id FROM borrowing_approval WHERE book_approval_id = ?)";
     private static final String UPDATE_READ_NOTIFICATION = "UPDATE notifications SET is_read = true WHERE id = ?";
     private static final String DELETE_REQUEST = "DELETE FROM borrowing_approval WHERE book_approval_id = ?";
+    
     
     private Connection getConnection() throws SQLException {
         try {
@@ -81,12 +89,12 @@ public class BorrowDAO {
         }
     }
     
-    public void sendNotification(int userId, String message) throws Exception {
-        String sql = INSERT_NOTIFICATION;
+    public void sendNotification(int userId, int bookId, String message) throws Exception {
         try (Connection conn = getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(INSERT_NOTIFICATION)) {
             stmt.setInt(1, userId);
-            stmt.setString(2, message);
+            stmt.setInt(2, bookId);
+            stmt.setString(3, message);
             stmt.executeUpdate();
         }
     }
@@ -182,6 +190,7 @@ public class BorrowDAO {
                 while (rs.next()) {
                     BorrowApproval ba = new BorrowApproval();
                     ba.setId(rs.getInt("book_approval_id"));
+                    ba.setBookId(rs.getInt("book_id"));
                     ba.setStatus(Status.valueOf(rs.getString("status")));
                     ba.setBookTitle(rs.getString("book_title"));
                     ba.setFullName(rs.getString("full_name"));
@@ -261,20 +270,21 @@ public class BorrowDAO {
 
     public boolean markBookAsReturned(int borrowId) {
         String sqlUpdateReturn = UPDATE_RETURN_BOOK;
-        String sqlUpdateBook = UPDATE_QUANTITY;
+         String sqlUpdateAvailability = UPDATE_AVAILABILITY;
 
         try (Connection conn = getConnection()) {
             conn.setAutoCommit(false);
 
             try (
                 PreparedStatement stmt1 = conn.prepareStatement(sqlUpdateReturn);
-                PreparedStatement stmt2 = conn.prepareStatement(sqlUpdateBook);
+                     PreparedStatement stmt3 = conn.prepareStatement(sqlUpdateAvailability);
             ) {
                 stmt1.setInt(1, borrowId);
                 stmt1.executeUpdate();
-                stmt2.setInt(1, borrowId);
-                stmt2.executeUpdate();
+                stmt3.setInt(1, borrowId);
+                stmt3.executeUpdate();
                 conn.commit();
+                
                 return true;   
             } catch (Exception ex) {
                 conn.rollback();
@@ -308,10 +318,6 @@ public class BorrowDAO {
                 }
                 stmt.executeUpdate();
         }
-        
-        System.out.println("Running updateStatus(), SQL: " + sql);
-System.out.println("Request ID: " + requestId + ", Status: " + status + ", Return Date: " + returnDate);
-
     }  
       
     public void markNotificationAsRead(int notificationId) throws Exception {
@@ -332,32 +338,27 @@ System.out.println("Request ID: " + requestId + ", Status: " + status + ", Retur
         }
     }
     
- public List<BorrowApproval> getReturnedBooks() throws SQLException {
-    List<BorrowApproval> list = new ArrayList<>();
-    String sql = "SELECT ba.*, b.book_id AS book_id, b.title AS book_title, u.full_name AS full_name " +
-                 "FROM borrowing_approval ba " +
-                 "JOIN book b ON ba.book_id = b.book_id " +
-                 "JOIN users u ON ba.user_id = u.user_id " +
-                 "WHERE ba.status = 'APPROVED' AND ba.actual_return_date IS NOT NULL "+
-            "ORDER BY ba.actual_return_date DESC";
+    public List<BorrowApproval> getReturnedBooks() throws SQLException {
+       List<BorrowApproval> list = new ArrayList<>();
+       String sql = SELECT_RETURN_BOOK;
 
-    try (Connection conn = getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
-            BorrowApproval ba = new BorrowApproval();
-            ba.setId(rs.getInt("book_approval_id"));
-            ba.setBookId(rs.getInt("book_id")); 
-            ba.setBookTitle(rs.getString("book_title"));
-            ba.setFullName(rs.getString("full_name"));
-            ba.setBorrowDate(rs.getDate("borrow_date"));
-            ba.setReturnDate(rs.getDate("return_date"));
-            ba.setActualReturnDate(rs.getDate("actual_return_date"));
-            list.add(ba);
-        }
-    }
-    return list;
-}
+       try (Connection conn = getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery()) {
+           while (rs.next()) {
+               BorrowApproval ba = new BorrowApproval();
+               ba.setId(rs.getInt("book_approval_id"));
+               ba.setBookId(rs.getInt("book_id")); 
+               ba.setBookTitle(rs.getString("book_title"));
+               ba.setFullName(rs.getString("full_name"));
+               ba.setBorrowDate(rs.getDate("borrow_date"));
+               ba.setReturnDate(rs.getDate("return_date"));
+               ba.setActualReturnDate(rs.getDate("actual_return_date"));
+               list.add(ba);
+           }
+       }
+       return list;
+   }
 
 
 }

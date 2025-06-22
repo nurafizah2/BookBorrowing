@@ -22,7 +22,7 @@ public class UpdateEmailServlet extends HttpServlet {
         UserDAO dao = new UserDAO();
       
         if (dao.isEmailTakenByOtherUser(email, id)) {               // Check if email is already taken by another user
-            request.setAttribute("errorUserId", id); // For highlighting which row failed
+            request.setAttribute("errorUserId", id);      
             request.setAttribute("error", "Email is already in use by another user.");
             request.getRequestDispatcher("ListOfUserServlet").forward(request, response);
         } else {

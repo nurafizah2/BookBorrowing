@@ -1,8 +1,10 @@
 package com.controller;
 
 import com.dao.BookDAO;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Bucket;
+import com.google.firebase.cloud.StorageClient;
 import com.model.Book;
-import java.io.File;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
@@ -24,15 +26,20 @@ public class DeleteBookServlet extends HttpServlet {
                 Book book = dao.getBookById(bookId);
 
                 if (book != null) {
-                    String imageName = book.getBookCoverImage();
+                    String imageUrl = book.getBookCoverImage();
 
-                    String uploadPath = getServletContext().getRealPath("") + File.separator + "uploads";  // Construct path to /uploads folder
-                    File imageFile = new File(uploadPath + File.separator + imageName);
-   
-                    if (imageFile.exists() && !imageName.equals("default.png")) {  // Delete the image if it exists and not a default image
-                        imageFile.delete();
+                    // Extract Firebase path
+                    if (imageUrl != null && imageUrl.contains("storage.googleapis.com")) {
+                        String firebasePath = extractFirebasePath(imageUrl);
+
+                        // Delete from Firebase
+                        Bucket bucket = StorageClient.getInstance().bucket();
+                        Blob blob = bucket.get(firebasePath);
+                        if (blob != null) {
+                            blob.delete();
+                        }
                     }
-                   
+               
                     boolean success = dao.deleteBook(bookId);  
 
                     if (success) {
@@ -50,6 +57,18 @@ public class DeleteBookServlet extends HttpServlet {
             }
         }
         response.sendRedirect("ListBooksServlet");
+    }
+    
+    private String extractFirebasePath(String url) {
+        try {
+            int index = url.indexOf("/covers/");
+            if (index != -1) {
+                return url.substring(index + 1); // remove the first '/' in path
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override

@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="css/admin-menu-style.css">
     <title>Borrow Request Approval</title>
     <style>
+        
         .form-container {
             margin: 50px auto;
             width: 500px;
@@ -17,12 +18,10 @@
             padding: 30px 50px;
             border: 2px solid #f2d98d;
         }
-
         .form-group {
             margin-bottom: 20px;
             font-size: 18px;
         }
-
         .form-group input {
             width: 100%;
             padding: 10px;
@@ -75,53 +74,46 @@
             background-color: white;
             margin-top: 20px;
             margin-bottom: 20px;
-            table-layout: fixed;
-            
+            table-layout: fixed; 
         }
-
         table th, table td {
             padding: 12px;
             border: 1px solid #ccc;
             text-align: center;
         }
-
         table th {
             background-color: #f9e8af;
             padding-top: 5px;
+        }
+        .scrollable-table {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .scrollable-table table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .scrollable-table thead th {
+            position: sticky;
+            top: 0;
+            background-color: #f9e8af;
+            z-index: 1;
+        }
+        .scrollable-table th,
+        .scrollable-table td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: center;
         }
         
         h2{
             text-align: center;
         }
-        
-   .scrollable-table {
-    max-height: 400px;
-    overflow-y: auto;
-}
-
-.scrollable-table table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-}
-
-.scrollable-table thead th {
-    position: sticky;
-    top: 0;
-    background-color: #f9e8af;
-    z-index: 1;
-}
-
-.scrollable-table th,
-.scrollable-table td {
-    padding: 12px;
-    border: 1px solid #ccc;
-    text-align: center;
-}
 
     </style>
 </head>
-
     <body>
         <div class="wrapper">
         <div class="lms-title">
@@ -133,6 +125,7 @@
         <div class="dashboard">
             <aside class="sidebar">
                 <h2>Admin Panel</h2>
+                <p class="welcome">Hi, ${currentUser.username}!</p>
                 <nav>
                     <ul>
                         <li class="has-submenu">
@@ -143,7 +136,7 @@
                                 <li><a href="ListBooksServlet">Update Book</a></li>
                             </ul>
                         <li><a href="ListOfUserServlet">Manage Users</a></li>
-                         <li><a href="ReturnBookServlet"> Returned Book History</a></li>
+                        <li><a href="ReturnBookServlet"> Returned Book History</a></li>
                         <li><a href="#" onclick="confirmLogout(event)">Logout</a></li>
                     </ul>
                 </nav>
@@ -152,66 +145,66 @@
             <div class="content-area">
                 <h2>Borrow Requests</h2>
                 <div class="scrollable-table">
-                <table>
-                    
-                    <colgroup>
-        <col style="width: 8%;">  <!-- ID -->
-        <col style="width: 27%;"> <!-- User -->
-        <col style="width: 22%;"> <!-- Book -->
-        <col style="width: 13%;"> <!-- Date -->
-        <col style="width: 10%;"> <!-- Status -->
-        <col style="width: 20%;"> <!-- Action -->
-    </colgroup>
-                    <thead>
-                    <tr>
-                        <th>Request ID</th>
-                        <th>User</th>
-                        <th>Book</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <c:forEach var="request" items="${borrowApproval}">
-                        <c:if test="${request.status == 'PENDING'}">
-                        <tr>
-                            <td>${request.id}</td>
-                            <td>${request.fullName} (${request.email})</td>
-                            <td>${request.bookTitle}</td>
-                            <td>${request.borrowDate}</td>
-                            <td>${request.status}</td>
-                            <td>
-                                <form action="BorrowApprovalServlet" method="post" style="display:inline;">
-                                    <input type="hidden" name="requestId" value="${request.id}" />
-                                    <input type="hidden" name="bookId" value="${request.bookId}" />
-                                    <input type="hidden" name="action" value="APPROVED" />
-                                    <input type="hidden" name="userId" value="${request.userId}" />
+                    <table>
+                        <colgroup>
+                            <col style="width: 8%;">  <!-- ID -->
+                            <col style="width: 22%;"> <!-- User -->
+                            <col style="width: 8%;"> <!-- Book ID -->
+                            <col style="width: 21%;"> <!-- Book -->
+                            <col style="width: 11%;"> <!-- Date -->
+                            <col style="width: 10%;"> <!-- Status -->
+                            <col style="width: 20%;"> <!-- Action -->
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Request ID</th>
+                                <th>User</th>
+                                <th>Book ID</th>
+                                <th>Book</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach var="request" items="${borrowApproval}">
+                                <c:if test="${request.status == 'PENDING'}">
+                                    <tr>
+                                        <td>${request.id}</td>
+                                        <td>${request.fullName} (${request.email})</td>
+                                        <td>${request.bookId}</td>
+                                        <td>${request.bookTitle}</td>
+                                        <td>${request.borrowDate}</td>
+                                        <td>${request.status}</td>
+                                        <td>
+                                            <form action="BorrowApprovalServlet" method="post" style="display:inline;">
+                                                <input type="hidden" name="requestId" value="${request.id}" />
+                                                <input type="hidden" name="bookId" value="${request.bookId}" />
+                                                <input type="hidden" name="action" value="APPROVED" />
+                                                <input type="hidden" name="userId" value="${request.userId}" />
+                                                <input type="date" name="returnDate" required /> <br><br>
+                                                <input type="submit" value="Approve" class="approve-btn" />
+                                            </form>
 
-                                    <input type="date" name="returnDate" required /> <br><br>
-                                    <input type="submit" value="Approve" class="approve-btn" />
-                                </form>
-
-                                <form action="BorrowApprovalServlet" method="post" style="display:inline;">
-                                    <input type="hidden" name="requestId" value="${request.id}" />
-                                    <input type="hidden" name="bookId" value="${request.bookId}" />
-                                    <input type="hidden" name="userId" value="${request.userId}" />
-
-                                    <input type="hidden" name="action" value="REJECTED" />
-                                    <input type="submit" value="Reject" class="reject-btn" />
-                                </form>
-                            </td>
-                        </tr>
-                        </c:if>
-                    </c:forEach>
-                    </tbody>
-                </table>
-            </div>
+                                            <form action="BorrowApprovalServlet" method="post" style="display:inline;">
+                                                <input type="hidden" name="requestId" value="${request.id}" />
+                                                <input type="hidden" name="bookId" value="${request.bookId}" />
+                                                <input type="hidden" name="userId" value="${request.userId}" />
+                                                <input type="hidden" name="action" value="REJECTED" />
+                                                <input type="submit" value="Reject" class="reject-btn" />
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </c:if>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-        </div>
-<%@ include file="footer.jsp" %>
-
+    </div>
+        
+    <%@ include file="footer.jsp" %>
     <script>
         function confirmLogout(event) {
             event.preventDefault();
@@ -230,6 +223,7 @@
                 });
             });
         });
+        
     </script>
-    </body>
+</body>
 </html>

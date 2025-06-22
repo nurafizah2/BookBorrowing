@@ -30,12 +30,15 @@ public class BookCatalogProcessing extends HttpServlet {
             RequestDispatcher dispatcher = request.getRequestDispatcher("book_details.jsp");
             dispatcher.forward(request, response);
         } else {
-            String keyword = request.getParameter("keyword");
-            List<Book> bookList = bookDAO.getBooks(keyword);
+            String keyword =  request.getParameter("keyword");
+            List<Book> bookList;
 
-                if (keyword == null || keyword.trim().isEmpty()) {
-                    Collections.shuffle(bookList);
-                }
+             if (keyword == null || keyword.trim().isEmpty()) {
+                bookList = bookDAO.getAvailableBooks(); 
+                Collections.shuffle(bookList); 
+            } else {
+                bookList = bookDAO.getBooks(keyword); 
+            }
                 
             request.setAttribute("bookList", bookList);
             RequestDispatcher dispatcher = request.getRequestDispatcher("book_catalog.jsp");

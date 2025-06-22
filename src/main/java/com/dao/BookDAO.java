@@ -19,12 +19,12 @@ public class BookDAO {
     private final String jdbcPassword = "admin";
 
     private static final String INSERT_BOOK = "INSERT INTO book (title, author, publisher, ISBN, genre, year_of_publication, quantity, book_description, book_cover_image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String SELECT_ALL_BOOKS = "SELECT * FROM book";    //select partial detail
+    private static final String SELECT_AVAILABLE_BOOKS = "SELECT * FROM book WHERE availability = 'available'";
     private static final String SELECT_ALL_BOOKS_DETAILS = "SELECT * FROM book";
     private static final String SELECT_BOOK_BY_ID = "SELECT * FROM book WHERE book_id = ?";
     private static final String SELECT_BOOK_ID_TITLE = "SELECT book_id, title, author FROM book";
     private static final String SELECT_BOOK_AVAILABILITY = "SELECT availability FROM book WHERE book_id = ?";
-    private static final String SEARCH_BOOKS = "SELECT * FROM book WHERE title LIKE ? OR author LIKE ?"; 
+    private static final String SEARCH_BOOKS = "SELECT * FROM book WHERE availability = 'available' AND (title LIKE ? OR author LIKE ?)";
     private static final String SELECT_TOTAL_BOOKS = "SELECT COUNT(*) FROM book";
     private static final String UPDATE_BOOK_AVAILABILITY = "UPDATE book SET availability = ? WHERE book_id = ?";
     private static final String DELETE_BOOK = "DELETE FROM book WHERE book_id = ?"; 
@@ -68,37 +68,57 @@ public class BookDAO {
         return allInserted;
     }
     
-    public List<Book> getBooks(String keyword) {       //list for book catalog
-        List<Book> bookList = new ArrayList<>();       //search book by keyword
-        try {
-            try (Connection conn = getConnection();
-                PreparedStatement stmt = prepareStatement(conn, keyword);
-                ResultSet rs = stmt.executeQuery()) {
+    
+    public List<Book> getBooks(String keyword) {    //search book
+        List<Book> bookList = new ArrayList<>();
 
-                    while (rs.next()) {
-                        Book b = new Book();
-                        b.setBookId(rs.getInt("book_id"));
-                        b.setTitle(rs.getString("title"));
-                        b.setAuthor(rs.getString("author"));
-                        b.setBookCoverImage(rs.getString("book_cover_image"));
-                        bookList.add(b);
-                    }
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(SEARCH_BOOKS)) {
+
+            String searchPattern = "%" + keyword + "%";
+            stmt.setString(1, searchPattern);
+            stmt.setString(2, searchPattern);
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Book book = new Book();
+                book.setBookId(rs.getInt("book_id"));
+                book.setTitle(rs.getString("title"));
+                book.setAuthor(rs.getString("author"));
+                book.setBookCoverImage(rs.getString("book_cover_image"));
+                book.setAvailability(Availability.valueOf(rs.getString("availability").toUpperCase()));
+                bookList.add(book);
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return bookList;
     }
 
-    private PreparedStatement prepareStatement(Connection conn, String keyword) throws SQLException {
-        if (keyword != null && !keyword.trim().isEmpty()) {
-            PreparedStatement stmt = conn.prepareStatement(SEARCH_BOOKS);
-            stmt.setString(1, "%" + keyword + "%");
-            stmt.setString(2, "%" + keyword + "%");
-            return stmt;
-        } else {
-            return conn.prepareStatement(SELECT_ALL_BOOKS);
+    
+    public List<Book> getAvailableBooks() {      //available books list
+        List<Book> availableBooks = new ArrayList<>();
+        String sql = SELECT_AVAILABLE_BOOKS;
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Book book = new Book();
+                book.setBookId(rs.getInt("book_id"));
+                book.setTitle(rs.getString("title"));
+                book.setAuthor(rs.getString("author"));
+                book.setBookCoverImage(rs.getString("book_cover_image"));
+                book.setAvailability(Availability.valueOf(rs.getString("availability").toUpperCase()));
+                availableBooks.add(book);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return availableBooks;
     }
     
     public Book getBookById(int id) {
@@ -140,7 +160,7 @@ public class BookDAO {
                 Book book = new Book();
                 book.setBookId(rs.getInt("book_id"));
                 book.setTitle(rs.getString("title"));
-                book.setTitle(rs.getString("title"));
+                book.setAuthor(rs.getString("author"));
                 books.add(book);
             }
         } catch (SQLException e) {
@@ -229,7 +249,4 @@ public class BookDAO {
             return false;
         }
     }
-    
-
-
 }

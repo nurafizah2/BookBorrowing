@@ -13,7 +13,7 @@
     </head>
     <body>
         <h2>Access Denied</h2>
-        <p>You do not have permission to view this page.</p><!-- comment -->
+        <p>You do not have permission to view this page.</p>
         <a href="login.jsp">Return to Login</a>
     </body>
 </html>

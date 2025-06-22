@@ -1,14 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package com.controller;
 
 import com.dao.UserDAO;
 import com.google.cloud.storage.Bucket;
 import com.google.firebase.cloud.StorageClient;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
@@ -38,8 +33,6 @@ public class UserProfileServlet extends HttpServlet {
              response.sendRedirect("login.jsp");
              return;
          }
-         
-         
          
          String email = request.getParameter("email");
          Part filePart = request.getPart("profileImage");

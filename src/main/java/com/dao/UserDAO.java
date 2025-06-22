@@ -20,15 +20,17 @@ public class UserDAO {
     private static final String SELECT_USER_BY_USERNAME = "SELECT * FROM users WHERE username = ?";
     private static final String SELECT_ALL_USERS = "SELECT * FROM users";
     private static final String SELECT_USER_BY_ID = "SELECT full_name, email FROM users WHERE user_id = ?";
+    private static final String UPDATE_USER_EMAIL = "UPDATE users SET email = ? WHERE user_id = ?";  //admin side
+    private static final String UPDATE_EMAIL_PROFILE = "UPDATE users SET email = ?, profile_picture = ? WHERE user_id = ?";
+    private static final String UPDATE_EMAIL = "UPDATE users SET email = ? WHERE user_id = ?";   //user side
+    private static final String UPDATE_PROFILE = "UPDATE users SET profile_picture = ? WHERE user_id = ?";
     private static final String COUNT_TOTAL_USERS = "SELECT COUNT(*) FROM users";
-    private static final String UPDATE_USER_EMAIL = "UPDATE users SET email = ? WHERE user_id = ?";
     private static final String DELETE_BORROWING_APPROVALS = "DELETE FROM borrowing_approval WHERE user_id = ?";
     private static final String DELETE_USER = "DELETE FROM users WHERE user_id = ?";
     private static final String CHECK_EMAIL_EXISTS = "SELECT COUNT(*) FROM users WHERE email = ?";
     private static final String CHECK_EMAIL_EXISTS_BY_OTHER = "SELECT user_id FROM users WHERE email = ? AND user_id != ?";
     private static final String SEARCH_USERS_BY_USERNAME = "SELECT * FROM users WHERE username LIKE ?";
     private static final String SEARCH_USERNAMES = "SELECT username FROM users WHERE username LIKE ? LIMIT 10";
-
 
     private Connection getConnection() throws SQLException {
         try {
@@ -74,6 +76,7 @@ public class UserDAO {
                     user.setFullname(rs.getString("full_name"));
                     user.setEmail(rs.getString("email"));
                     user.setRole(rs.getString("role"));
+                    user.setProfile_picture(rs.getString("profile_picture"));
                     return user;
                 }
             }
@@ -248,21 +251,32 @@ public class UserDAO {
     }
     
     public void updateUserProfile(int userId, String email, String profile_picture) throws SQLException {
-    String sql = (profile_picture != null)
-        ? "UPDATE users SET email = ?, profile_picture = ? WHERE user_id = ?"
-        : "UPDATE users SET email = ? WHERE user_id = ?";
-
-    try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-        stmt.setString(1, email);
-        if (profile_picture != null) {
-            stmt.setString(2, profile_picture);
-            stmt.setInt(3, userId);
+        String sql;
+           if (email != null && profile_picture != null) {
+            sql = UPDATE_EMAIL_PROFILE;
+        } else if (email != null) {
+            sql = UPDATE_EMAIL;
+        } else if (profile_picture != null) {
+            sql = UPDATE_PROFILE;
         } else {
-            stmt.setInt(2, userId);
+            return;
         }
-        stmt.executeUpdate();
-    }
-}
+
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+             if (email != null && profile_picture != null) {
+                stmt.setString(1, email);
+                stmt.setString(2, profile_picture);
+                stmt.setInt(3, userId);
+             } else if (email != null) {
+                stmt.setString(1, email);
+                stmt.setInt(2, userId);
+             } else if (profile_picture != null) {
+                stmt.setString(1, profile_picture);
+                stmt.setInt(2, userId);
+             }
+                stmt.executeUpdate();
+        }
+    }   
 
 }
 

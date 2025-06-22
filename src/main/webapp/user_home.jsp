@@ -10,11 +10,11 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Merriweather&family=Tagesschrift&family=Lilita+One&display=Roboto&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="css/header-footer.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-        <title>Book Borrowing System</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather&family=Tagesschrift&family=Lilita+One&display=Roboto&display=swap">
+        <link rel="stylesheet" href="css/header-footer.css">
+        <title>User Profile</title>
 
         <style>
             body {
@@ -235,6 +235,14 @@
                 display: block;
             }
             
+            .profile-icon {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                object-fit: cover;
+              }
+
+            
         </style>
     </head>
     
@@ -259,7 +267,6 @@
                 <div class="notification-wrapper">
                     <span id="notificationBell" class="notif-bell">
                         <i class="fas fa-bell"></i>
-
                         <c:if test="${not empty notifications}">
                             <span id="notifCount" class="notif-count">
                                 ${fn:length(notifications)}
@@ -269,12 +276,13 @@
                 </div>
 
                 <a href="user_profile.jsp">
-                    <img src="images/profile.png" alt="Profile" class="profile-icon">
+                    <img src="${not empty sessionScope.currentUser.profile_picture ? sessionScope.currentUser.profile_picture : 'images/profile.png'}"
+                            alt="Profile"
+                            class="profile-icon">
+
                 </a>
             </div>
             
-            
-
             <!-- Notification Dropdown Box -->
             <c:if test="${not empty notifications}">
                 <div id="notificationDropdown" class="notification-dropdown">
@@ -291,68 +299,69 @@
 
                             <small>
                               <i class="fas fa-book"></i> <strong>${note.bookTitle}</strong><br>
-                              <i class="fas fa-pen-nib"></i> by ${note.authorName}<br>
+                              <i class="fas fa-pen-nib"></i> by ${note.author}<br>
                               <i class="fas fa-clock"></i> ${note.timeStamp}
                             </small>
                         </div>
                     </c:forEach>
                 </div>
             </c:if>
-    </header>
+        </header>
         
         <%
-    String requestSuccess = request.getParameter("request");
-    if ("success".equals(requestSuccess)) {
-%>
-    <div id="borrowSuccessAlert" class="alert alert-success alert-dismissible fade show" role="alert">
-        Your borrow request has been sent. We will notify you soon.
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-<%
-    }
-%>
+            String requestSuccess = request.getParameter("request");
+            if ("success".equals(requestSuccess)) {
+        %>
+            <div id="borrowSuccessAlert" class="alert alert-success alert-dismissible fade show" role="alert">
+                Your borrow request has been sent. We will notify you soon.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <%
+            }
+        %>
 
  
-    <div class="content-container">
-        <h1 class="welcome-text">Welcome to</h1>
-        <h1 class="library-name">Whisperwood Library</h1>
-        <img src="images/logo3.png" alt="whisperwood_logo" class="logo" ><br>
-        <a href="BookCatalogProcessing" class="search-link">Search book here</a>
-    </div>
+        <div class="content-container">
+            <h1 class="welcome-text">Welcome to</h1>
+            <h1 class="library-name">Whisperwood Library</h1>
+            <img src="images/logo3.png" alt="whisperwood_logo" class="logo" ><br>
+            <a href="BookCatalogProcessing" class="search-link">Search book here</a>
+        </div>
       
-    <%@ include file="footer.jsp" %>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const bell = document.getElementById("notificationBell");
-            const dropdown = document.getElementById("notificationDropdown");
+        <%@ include file="footer.jsp" %>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const bell = document.getElementById("notificationBell");
+                const dropdown = document.getElementById("notificationDropdown");
 
-            if (bell && dropdown) {
-                bell.addEventListener("click", function (e) {
-                    e.stopPropagation();
-                    dropdown.classList.toggle("show");
-                });
+                if (bell && dropdown) {
+                    bell.addEventListener("click", function (e) {
+                        e.stopPropagation();
+                        dropdown.classList.toggle("show");
+                    });
 
-                document.addEventListener("click", function (e) {
-                    if (!dropdown.contains(e.target) && !bell.contains(e.target)) {
-                        dropdown.classList.remove("show");
-                    }
-                });
-            }
-        });
-        
-          window.addEventListener("DOMContentLoaded", function () {
-    setTimeout(function () {
-      const alert = document.getElementById("borrowSuccessAlert");
-      if (alert) {
-        alert.classList.remove("show");
-        alert.classList.add("fade");
-      setTimeout(() => {
-          alert.remove();
-        }, 500);
-      }
-    }, 3000); // Wait 4 seconds before starting to fade
-  });
-    </script>
-    <script src="js/user_js.js"></script>
+                    document.addEventListener("click", function (e) {
+                        if (!dropdown.contains(e.target) && !bell.contains(e.target)) {
+                            dropdown.classList.remove("show");
+                        }
+                    });
+                }
+            });
+
+            window.addEventListener("DOMContentLoaded", function () {
+                setTimeout(function () {
+                  const alert = document.getElementById("borrowSuccessAlert");
+                  if (alert) {
+                    alert.classList.remove("show");
+                    alert.classList.add("fade");
+                  setTimeout(() => {
+                      alert.remove();
+                    }, 500);
+                  }
+                }, 3000); 
+              });
+              
+        </script>
+        <script src="js/user_js.js"></script>
     </body>
 </html>

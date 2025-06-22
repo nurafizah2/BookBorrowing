@@ -6,19 +6,18 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,400;1,400;1,700&display=Merriweather&family=swap">
+    <link rel="stylesheet" href="css/header-footer.css" >
     <title>User Profile</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,400;1,400;1,700&display=Merriweather&family=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/header-footer.css">
 
     <style>
         html, body {
             height: 100%;
             margin: 0;
-            padding: 0;
-            
+            padding: 0;         
         }
-
+        
         body {
             display: flex;
             flex-direction: column;
@@ -80,6 +79,7 @@
         .btn-primary {
             width: 100%;
         }
+        
     </style>
 </head>
 
@@ -111,18 +111,17 @@
     <%
     String success = request.getParameter("success");
     String error = request.getParameter("error");
-%>
+    %>
 
-<% if (success != null) { %>
-    <div class="alert alert-success text-center w-100" role="alert">
-        Profile updated successfully!
-    </div>
-<% } else if (error != null) { %>
-    <div class="alert alert-danger text-center w-100" role="alert">
-        Failed to update profile. Please try again.
-    </div>
-<% } %>
-
+    <% if (success != null) { %>
+        <div class="alert alert-success text-center w-100" role="alert">
+            Profile updated successfully!
+        </div>
+    <% } else if (error != null) { %>
+        <div class="alert alert-danger text-center w-100" role="alert">
+            Failed to update profile. Please try again.
+        </div>
+    <% } %>
 
     <div class="main">
         <div class="profile-card">

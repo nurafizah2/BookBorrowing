@@ -52,7 +52,7 @@ public class MyBorrowingServlet extends HttpServlet {
         try {
             dao.insertBorrowRequest(bookId, borrowDate, "PENDING", null, userId);
 
-            BookDAO bookDAO = new BookDAO();        // Update availability to "unavailable"
+            BookDAO bookDAO = new BookDAO();    
             bookDAO.updateBookAvailability(bookId, "unavailable");
 
         } catch (SQLException e) {
