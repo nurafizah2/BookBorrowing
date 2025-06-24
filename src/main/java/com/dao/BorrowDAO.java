@@ -12,6 +12,8 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  *
@@ -23,6 +25,8 @@ public class BorrowDAO {
     private final String jdbcUsername = "root";
     private final String jdbcPassword = "admin";
 
+    private static final Logger logger = Logger.getLogger(BorrowDAO.class.getName());
+    
     private static final String INSERT_BORROW_REQUEST = "INSERT INTO borrowing_approval (book_id, borrow_date, status, return_date, user_id) VALUES (?, ?, ?, ?, ?)";
     private static final String INSERT_NOTIFICATION = "INSERT INTO notifications (user_id, book_id, message) VALUES (?, ?, ?)";
     private static final String SELECT_ALL_PENDING_REQUESTS = "SELECT ba.book_approval_id, ba.book_id, b.title AS book_title, ba.borrow_date, ba.return_date, ba.status, u.full_name, u.email, u.user_id " +
@@ -36,7 +40,7 @@ public class BorrowDAO {
                                                                "FROM borrowing_approval br " +
                                                                "JOIN users u ON br.user_id = u.user_id " +
                                                                "JOIN book b ON br.book_id = b.book_id " +
-                                                               "ORDER BY br.borrow_date DESC LIMIT 5";
+                                                               "ORDER BY br.borrow_date ASC LIMIT 5";
     
     private static final String SELECT_APPROVED_REQUEST_WITH_DETAILS = "SELECT ba.book_approval_id, ba.status, ba.return_date, ba.book_id, "+
                                                                        "b.title AS book_title, u.full_name, u.email, ba.actual_return_date "+
@@ -44,6 +48,7 @@ public class BorrowDAO {
                                                                        "JOIN book b ON ba.book_id = b.book_id "+
                                                                        "JOIN users u ON ba.user_id = u.user_id "+
                                                                        "WHERE ba.status = 'APPROVED' "+
+                                                                       "AND actual_return_date IS NULL "+
                                                                        "ORDER BY ba.return_date DESC";
     
     private static final String SELECT_BORROW_REQUEST_WITH_DETAIL = "SELECT book_approval_id, book_id, user_id, status, return_date, actual_return_date FROM borrowing_approval WHERE user_id = ?";
@@ -70,7 +75,7 @@ public class BorrowDAO {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+             logger.log(Level.SEVERE, "MySQL JDBC Driver not found", e);
             throw new SQLException("MySQL JDBC Driver not found.");
         }
         return DriverManager.getConnection(jdbcURL, jdbcUsername, jdbcPassword);
@@ -225,7 +230,7 @@ public class BorrowDAO {
             }
         return list;
     }
-    
+  
     public List<Notification> getNotificationsByUserId(int userId) {
             List<Notification> notifications = new ArrayList<>();
 
@@ -246,7 +251,7 @@ public class BorrowDAO {
                 }
 
             } catch (SQLException e) {
-                e.printStackTrace(); 
+                logger.log(Level.SEVERE, "Error retrieving notifications for userId: " + userId, e);
             }
         return notifications;
     }
@@ -263,11 +268,11 @@ public class BorrowDAO {
                 count = rs.getInt(1);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error retrieving unread notification count for userId: " + userId, e);
         }
         return count;
     }
-
+ 
     public boolean markBookAsReturned(int borrowId) {
         String sqlUpdateReturn = UPDATE_RETURN_BOOK;
          String sqlUpdateAvailability = UPDATE_AVAILABILITY;
@@ -288,10 +293,10 @@ public class BorrowDAO {
                 return true;   
             } catch (Exception ex) {
                 conn.rollback();
-                ex.printStackTrace();
+                logger.log(Level.SEVERE, "Error updating book return status for borrowId: " + borrowId, ex);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error in markBookAsReturned for borrowId: " + borrowId, e);
         }
         return false;
     }

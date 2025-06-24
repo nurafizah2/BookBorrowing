@@ -23,38 +23,73 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <title>Returned Books</title>
     
-    <style>
-        h3 {
-            text-align: center;
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #d6f3f0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+    h3 {
+        text-align: center;
+        font-size: 25px;
+        margin-top: 30px;
+        font-family: 'Merriweather', serif;
+        font-weight: bold;
+    }
+
+     .main-content {
+            flex: 1; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
         }
 
-        table {
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: white;
+    }
+
+    th, td {
+        padding: 8px 10px;
+        text-align: center;
+        border: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f9e8af;
+    }
+
+    tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .scrollable-table {
+            max-height: 500px;
+            overflow-y: auto;
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+            border: none;
         }
+
+
+    @media (max-width: 768px) {
+  
 
         th, td {
-            padding: 8px 10px;
-             text-align: center;
-            border-bottom: 1px solid #ddd;
+            font-size: 14px;
         }
 
-        th {
-            background-color: #f5f5f5;
+        h3 {
+            font-size: 22px;
         }
-
-        td {
-            height: 5px;
-            overflow: hidden;
-          line-height: 5px;
-          padding: 20px 0px;
-        }
-        
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-        
+    }
 </style>
 
 </head>
@@ -80,49 +115,52 @@
                                     <li><a href="ListBooksServlet">Update Book</a></li>
                                 </ul>
                             </li>
-                            <li><a href="ReturnBookServlet"> Returned Book History</a></li>
                             <li><a href="ListOfUserServlet">Manage Users</a></li>
+                            <li><a href="ReturnBookServlet"> Returned Book History</a></li>
                             <li><a href="#" onclick="confirmLogout(event)">Logout</a></li>
                         </ul>
                     </nav>
                 </aside>
 
-                <main class="container mt-4">
-                    <h3>📚 Returned Books</h3>
+                    <div class="main-content">
+                    <h3>📚 Returned Books History</h3>
+
 
                     <c:if test="${empty returnedList}">
                         <p style="color: red;">No returned books found.</p>
                     </c:if>
 
                     <c:if test="${not empty returnedList}">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Borrow ID</th>
-                                    <th>User</th>
-                                    <th>Book ID</th>
-                                    <th>Book Title</th>
-                                    <th>Borrow Date</th>
-                                    <th>Return Date</th>
-                                    <th>Actual Return Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <c:forEach var="borrow" items="${returnedList}">
+                          <div class="scrollable-table">
+                            <table>
+                                <thead>
                                     <tr>
-                                        <td>${borrow.id}</td>
-                                        <td>${borrow.fullName}</td>
-                                        <td>${borrow.bookId}</td>
-                                        <td>${borrow.bookTitle}</td>
-                                        <td>${borrow.borrowDate}</td>
-                                        <td>${borrow.returnDate}</td>
-                                        <td>${borrow.actualReturnDate}</td>
+                                        <th>Borrow ID</th>
+                                        <th>User</th>
+                                        <th>Book ID</th>
+                                        <th>Book Title</th>
+                                        <th>Borrow Date</th>
+                                        <th>Return Date</th>
+                                        <th>Actual Return Date</th>
                                     </tr>
-                                </c:forEach>
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    <c:forEach var="borrow" items="${returnedList}">
+                                        <tr>
+                                            <td>${borrow.id}</td>
+                                            <td>${borrow.fullName}</td>
+                                            <td>${borrow.bookId}</td>
+                                            <td>${borrow.bookTitle}</td>
+                                            <td>${borrow.borrowDate}</td>
+                                            <td>${borrow.returnDate}</td>
+                                            <td>${borrow.actualReturnDate}</td>
+                                        </tr>
+                                    </c:forEach>
+                                </tbody>
+                            </table>
+                         </div>
                     </c:if>
-                </main>
+              
             </div>
         </div>
 

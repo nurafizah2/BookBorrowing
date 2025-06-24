@@ -8,11 +8,14 @@ import com.model.Book;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 /**
  *
  * @author Saidatul
  */
 public class DeleteBookServlet extends HttpServlet {
+    private static final Logger logger = Logger.getLogger(DeleteBookServlet.class.getName());
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -66,7 +69,7 @@ public class DeleteBookServlet extends HttpServlet {
                 return url.substring(index + 1); // remove the first '/' in path
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error extracting Firebase path from URL: " + url, e);
         }
         return null;
     }

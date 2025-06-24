@@ -11,6 +11,21 @@
     <title>Borrow Request Approval</title>
     <style>
         
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            box-sizing: border-box;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        
         .form-container {
             margin: 50px auto;
             width: 500px;
@@ -115,13 +130,14 @@
     </style>
 </head>
     <body>
-        <div class="wrapper">
+        
         <div class="lms-title">
             <div class="spacer"></div>
             <span class="title-text">Whisperwood Library</span>
             <img src="images/logo4.png" alt="whisperwood_logo" class="logo">
         </div>
 
+        <div class="wrapper">
         <div class="dashboard">
             <aside class="sidebar">
                 <h2>Admin Panel</h2>
@@ -143,7 +159,7 @@
             </aside>
 
             <div class="content-area">
-                <h2>Borrow Requests</h2>
+                <h2>📥 Borrow Requests</h2>
                 <div class="scrollable-table">
                     <table>
                         <colgroup>

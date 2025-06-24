@@ -9,13 +9,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.util.List;
-
+import java.util.logging.Logger;
+import java.util.logging.Level;
 /**
  *
  * @author Nurafizah
  */
 
 public class ReturnBookServlet extends HttpServlet {
+     private static final Logger logger = Logger.getLogger(ReturnBookServlet.class.getName());
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -48,7 +50,7 @@ public class ReturnBookServlet extends HttpServlet {
             request.setAttribute("returnedList", returnedList);
             request.getRequestDispatcher("returned_book.jsp").forward(request, response);
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            logger.log(Level.SEVERE, "Error loading returned books", ex);
             request.setAttribute("errorMessage", "Error loading returned books.");
             request.getRequestDispatcher("error.jsp").forward(request, response); // optional error page
         }

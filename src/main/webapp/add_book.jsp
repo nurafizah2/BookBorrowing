@@ -10,27 +10,68 @@
     
     <style>
         body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #d6f3f0;
-            height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #d6f3f0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+    overflow-x: hidden;
+    
+    }
+* {
+    box-sizing: border-box;
+}
+    h3 {
+        text-align: center;
+        font-size: 25px;
+        margin-top: 30px;
+        font-family: 'Merriweather', serif;
+        font-weight: bold;
+    }
+        
+          .main-content {
+            flex: 1; 
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            align-items: center;
+            padding: 22px 32px;
+            margin: 0px 40px
+            
         }
 
-        .form-container {
-            margin: 40px auto;
-            width: 100%;
-            max-width: 900px; 
-            background-color: #fff5d7;
-            padding: 30px;
-            border: 2px solid #f2d98d;
-            box-sizing: border-box;
-            flex-grow: 1;
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: white;
+    }
+
+    th, td {
+        padding: 8px 10px;
+        text-align: center;
+        border: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f9e8af;
+    }
+
+    tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .scrollable-table {
+            max-height: 500px;
             overflow-y: auto;
-            margin-bottom: 20px;
+            width: 100%;
+            border: none;
+            background-color: #fff5d7;
+            padding: 35px 20px;
+            border: 2px solid #f2d98d;
         }
+
 
         .form-group {
             margin-bottom: 20px;
@@ -89,13 +130,7 @@
             }
         }
         
-        h3{
-            text-align: center;
-            font-family: 'Merriweather', serif;
-            font-weight: bold;
-            font-size: 25px;
-        }
-
+    
         form-group-file{
             visibility: hidden;
         }
@@ -133,9 +168,9 @@
                 </nav>
             </aside>
 
-            <div class="form-container">
-                <h3>Add Book Form</h3>
-
+            <div class="main-content">
+                <h3> 📚 Add Book Form</h3>
+<div class="scrollable-table">
                 <form action="AddBookProcessing" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="title">Title:</label>
@@ -174,7 +209,7 @@
 
                     <div class="form-group">
                         <label for="description">Book Description:</label>
-                        <textarea id="description" name="description" rows="4" cols="50"></textarea>
+                        <textarea id="description" name="description" rows="4" cols="50" required></textarea>
                     </div>
 
                     <div class="form-group">

@@ -77,7 +77,5 @@ public class User implements java.io.Serializable{
 
     public void setProfile_picture(String profile_picture) {
         this.profile_picture = profile_picture;
-    }
-    
-    
+    } 
 }

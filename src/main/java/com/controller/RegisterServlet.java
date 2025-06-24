@@ -23,7 +23,6 @@ public class RegisterServlet extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         String role = request.getParameter("role");
-
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
         User user = new User();
@@ -39,11 +38,8 @@ public class RegisterServlet extends HttpServlet {
         if (result) {
             System.out.println("✅ Registration successful");
             response.sendRedirect("login.jsp?success=true");
-
         } else {
             System.out.println("❌ Registration failed in RegisterServlet");
             response.getWriter().println("Registration failed. Check server logs for error.");
-        }
-    }
-}
+        }}}
 

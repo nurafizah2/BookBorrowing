@@ -4,10 +4,9 @@ import com.model.Book;
 import com.model.Book.Availability;
 import java.sql.*;
 import java.util.ArrayList;
-import static java.util.Collections.list;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 /**
  *
  * @author Saidatul
@@ -18,6 +17,8 @@ public class BookDAO {
     private final String jdbcUsername = "root";
     private final String jdbcPassword = "admin";
 
+    private static final Logger logger = Logger.getLogger(BookDAO.class.getName());
+    
     private static final String INSERT_BOOK = "INSERT INTO book (title, author, publisher, ISBN, genre, year_of_publication, quantity, book_description, book_cover_image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SELECT_AVAILABLE_BOOKS = "SELECT * FROM book WHERE availability = 'available'";
     private static final String SELECT_ALL_BOOKS_DETAILS = "SELECT * FROM book";
@@ -33,7 +34,7 @@ public class BookDAO {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver"); 
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "MySQL JDBC Driver not found", e);
             throw new SQLException("MySQL JDBC Driver not found.");
         }
         return DriverManager.getConnection(jdbcURL, jdbcUsername, jdbcPassword);
@@ -52,7 +53,7 @@ public class BookDAO {
                     stmt.setString(4, book.getIsbn());
                     stmt.setString(5, book.getGenre());
                     stmt.setInt(6, book.getYearOfPublication());
-                    stmt.setInt(7, 1); // Each row represents one book copy
+                    stmt.setInt(7, 1);                          // Each row represents one book copy
                     stmt.setString(8, book.getBookDescription());
                     stmt.setString(9, book.getBookCoverImage());
 
@@ -62,13 +63,12 @@ public class BookDAO {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error adding book", e);
             return false;
         }
         return allInserted;
     }
-    
-    
+     
     public List<Book> getBooks(String keyword) {    //search book
         List<Book> bookList = new ArrayList<>();
 
@@ -91,13 +91,12 @@ public class BookDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error adding book", e);
         }
 
         return bookList;
     }
-
-    
+   
     public List<Book> getAvailableBooks() {      //available books list
         List<Book> availableBooks = new ArrayList<>();
         String sql = SELECT_AVAILABLE_BOOKS;
@@ -116,7 +115,7 @@ public class BookDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error fetching available books", e);
         }
         return availableBooks;
     }
@@ -143,7 +142,7 @@ public class BookDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error fetching book by ID: " + id, e);
         }
         return book;
     }
@@ -164,11 +163,10 @@ public class BookDAO {
                 books.add(book);
             }
         } catch (SQLException e) {
-          e.printStackTrace();
+          logger.log(Level.SEVERE, "Error fetching all books for dropdown", e);
         }
         return books;
     }
-     
     
     public List<Book> getAllBooksDetailed() throws Exception {
         List<Book> bookList = new ArrayList<>();
@@ -220,7 +218,7 @@ public class BookDAO {
                     availability = rs.getString("availability");
                 }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error fetching availability for book ID: " + bookId, e);
         }
         return availability;
     }
@@ -233,7 +231,7 @@ public class BookDAO {
                 ps.setInt(2, bookId);
                 ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error updating availability for book ID: " + bookId + " to status: " + status, e);
         }
     }
     
@@ -245,7 +243,7 @@ public class BookDAO {
             int rowsDeleted = stmt.executeUpdate();
             return rowsDeleted > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error deleting book ID: " + bookId, e);
             return false;
         }
     }

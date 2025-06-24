@@ -9,19 +9,101 @@
 
 <html>
 <head>
+    
     <title>Approved Borrowed Books</title>
     <link rel="stylesheet" href="css/admin-menu-style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,400;1,400;1,700&display=Merriweather&family=swap" rel="stylesheet">
+
+    <style>
+        
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        box-sizing: border-box;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+    }
+        
+    .container {
+        margin-left: 0px;
+        padding: 20px;
+        padding-left: 40px;
+        background-color: #d6f3f0;
+        padding-bottom: 100px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        table-layout: fixed;
+    }
+
+    table th, table td {
+        padding: 12px;
+        border: 1px solid #ccc;
+        text-align: center;
+    }
+
+    table th {
+        background-color: #f9e8af;
+        padding-top: 5px;
+    }
+
+    .text-success.fw-bold {
+        color: green;
+        font-weight: bold;
+    }
+
+    h3 {
+        text-align: center;
+        font-size: 25px;
+        margin-top: 30px;
+        font-family: 'Merriweather', serif;
+        font-weight: bold;
+    }
+    
+    .scrollable-table {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .scrollable-table table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+    }
+
+    .scrollable-table thead th {
+        position: sticky;
+        top: 0;
+        background-color: #f9e8af;
+        z-index: 1;
+    }
+
+</style>
+
 </head>
 
 <body>
-    <div class="wrapper">
-        <div class="lms-title">
-            <div class="spacer"></div>
-            <span class="title-text">Whisperwood Library</span>
-            <img src="images/logo4.png" alt="whisperwood_logo" class="logo">
-        </div>
+    
+    <div class="lms-title">
+        <div class="spacer"></div>
+        <span class="title-text">Whisperwood Library</span>
+        <img src="images/logo4.png" alt="whisperwood_logo" class="logo">
+    </div>
 
+    <div class="wrapper">
         <div class="dashboard">
             <aside class="sidebar">
                 <h2>Admin Panel</h2>
@@ -29,7 +111,7 @@
                 <nav>
                     <ul>
                         <li><a href="AdminHome">Home</a></li>
-                        <li class="has-submenu">
+                        <li class="has-submenu"> 
                             <button class="dropdown-btn">Manage Books <i class="arrow down"></i></button>
                             <ul class="submenu">
                                 <li><a href="add_book.jsp">Add Book</a></li>
@@ -43,51 +125,62 @@
                 </nav>
             </aside>
 
-            <div class="container mt-4">
-                <h3>Approved Borrowed Books</h3>
+            <div class="container mt-0">
+                <h3>✅ Approved Borrowed Books</h3>
 
                 <c:if test="${empty approvedList}">
                     <p style="color:red;">No approved books found.</p>
                 </c:if>
 
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Borrow ID</th>
-                            <th>Full Name</th>
-                            <th>Book ID</th>
-                            <th>Title</th>
-                            <th>Email</th>
-                            <th>Return Date</th>
-                            <th>Actual Return Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <c:forEach var="borrow" items="${approvedList}">
+                <div class="scrollable-table">
+                    <table>
+                        <colgroup>
+                    <col style="width: 7%;">   <!-- Id -->
+                    <col style="width: 25%;">  <!-- Full name-->
+                    <col style="width: 7%;">  <!-- Book Id -->
+                    <col style="width: 25%;">  <!-- Title -->
+                    <col style="width: 16%;">  <!-- Email -->
+                    <col style="width: 10%;">  <!-- return date -->
+                    <col style="width: 10%;">  <!-- actual return date -->
+                </colgroup>
+                        <thead>
                             <tr>
-                                <td>${borrow.id}</td>
-                                <td>${borrow.fullName}</td>
-                                <td>${borrow.bookId}</td>
-                                <td>${borrow.bookTitle}</td>
-                                <td>${borrow.email}</td>
-                                <td>${borrow.returnDate}</td>
-                                <td>
-                                    <c:choose>
-                                        <c:when test="${empty borrow.actualReturnDate}">
-                                            <form method="post" action="ReturnBookServlet" onsubmit="return confirm('Return this book?')">
-                                                <input type="hidden" name="borrowId" value="${borrow.id}" />
-                                                <button type="submit" class="btn btn-sm btn-primary">Return</button>
-                                            </form>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <span class="text-success fw-bold">Returned on: ${borrow.actualReturnDate}</span>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </td>
+                                <th>Borrow ID</th>
+                                <th>Full Name</th>
+                                <th>Book ID</th>
+                                <th>Title</th>
+                                <th>Email</th>
+                                <th>Return Date</th>
+                                <th>Actual Return Date</th>
                             </tr>
-                        </c:forEach>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <c:forEach var="borrow" items="${approvedList}">
+                                <tr>
+                                    <td>${borrow.id}</td>
+                                    <td>${borrow.fullName}</td>
+                                    <td>${borrow.bookId}</td>
+                                    <td>${borrow.bookTitle}</td>
+                                    <td>${borrow.email}</td>
+                                    <td>${borrow.returnDate}</td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${empty borrow.actualReturnDate}">
+                                                <form method="post" action="ReturnBookServlet" onsubmit="return confirm('Return this book?')">
+                                                    <input type="hidden" name="borrowId" value="${borrow.id}" />
+                                                    <button type="submit" class="btn btn-sm btn-primary">Return</button>
+                                                </form>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span class="text-success fw-bold">Returned on: ${borrow.actualReturnDate}</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

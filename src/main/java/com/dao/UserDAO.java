@@ -5,16 +5,18 @@ import com.model.User;
 import java.util.ArrayList;
 import java.util.List;
 import org.mindrot.jbcrypt.BCrypt;
-
+import java.util.logging.Logger;
+import java.util.logging.Level;
 /**
  *
  * @author Nazihah
  */
-
 public class UserDAO {
     private final String jdbcURL = "jdbc:mysql://localhost:3306/borrowing_book_system?useSSL=false&serverTimezone=UTC";
     private final String dbUser = "root";
     private final String dbPassword = "admin"; 
+    
+    private static final Logger logger = Logger.getLogger(UserDAO.class.getName());
     
     private static final String INSERT_USER = "INSERT INTO users(full_name, username, email, password, role) VALUES (?, ?, ?, ?, ?)";
     private static final String SELECT_USER_BY_USERNAME = "SELECT * FROM users WHERE username = ?";
@@ -36,7 +38,7 @@ public class UserDAO {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+             logger.log(Level.SEVERE, "MySQL JDBC Driver not found", e);
         }
         return DriverManager.getConnection(jdbcURL, dbUser, dbPassword);
     }
@@ -55,7 +57,7 @@ public class UserDAO {
             return true;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error registering user", e);
             return false;
         }
     }
@@ -81,7 +83,7 @@ public class UserDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+             logger.log(Level.SEVERE, "Error logging in user", e);
         }
         return null;
     }
@@ -103,6 +105,9 @@ public class UserDAO {
                 user.setRole(rs.getString("role"));
                 userList.add(user);
             }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error fetching all users", e);
+            throw e;
         }
         return userList;
     }
@@ -120,6 +125,9 @@ public class UserDAO {
                     return user;
                 }
             }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error retrieving user by ID", e);
+            throw e;
         }
         return null;
     }
@@ -145,7 +153,7 @@ public class UserDAO {
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error updating user email", e);
         }
     }
 
@@ -169,7 +177,7 @@ public class UserDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error deleting user", e);
         }
     }
 
@@ -183,11 +191,10 @@ public class UserDAO {
             return rs.next() && rs.getInt(1) > 0;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error checking if email is taken", e);
         }
         return false;
     }
-
     public boolean isEmailTakenByOtherUser(String email, int userId) {
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(CHECK_EMAIL_EXISTS_BY_OTHER)) {
@@ -199,7 +206,7 @@ public class UserDAO {
             return rs.next();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error checking if email is taken by another user", e);
         }
         return false;
     }
@@ -224,7 +231,7 @@ public class UserDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+           logger.log(Level.SEVERE, "Error searching users by username", e);
         }
 
         return list;
@@ -244,7 +251,7 @@ public class UserDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error searching usernames", e);
         }
 
         return usernames;
